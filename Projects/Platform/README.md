@@ -11,7 +11,7 @@ The real-time operating system [Keil RTX5](https://arm-software.github.io/CMSIS_
 
 It is configured with the following settings:
 
-- [Global Dynamic Memory size](https://arm-software.github.io/CMSIS_5/RTOS2/html/config_rtx5.html#systemConfig): 24000 bytes
+- [Global Dynamic Memory size](https://arm-software.github.io/CMSIS_5/RTOS2/html/config_rtx5.html#systemConfig): 32768 bytes
 - [Default Thread Stack size](https://arm-software.github.io/CMSIS_5/RTOS2/html/config_rtx5.html#threadConfig): 3072 bytes
 - [Event Recorder Configuration](https://arm-software.github.io/CMSIS_5/RTOS2/html/config_rtx5.html#evtrecConfig)
   - [Global Initialization](https://arm-software.github.io/CMSIS_5/RTOS2/html/config_rtx5.html#evtrecConfigGlobIni): 1
@@ -78,9 +78,14 @@ The example project can be re-configured to work on custom hardware. Refer to ["
 | PH1     | RCC_OSC_OUT    |                                               | External Oscillator (HSE)
 | PC14    | RCC_OSC32_IN   |                                               | External Oscillator (LSE)
 | PC15    | RCC_OSC32_OUT  |                                               | External Oscillator (LSE)
-| PC13    | vioBUTTON0     | not configured via CubeMX                     | Joystic SELECT (with define VIO_BUTTON_FROM_JOYSTICK)
+| PC13    | vioBUTTON0     | not configured via CubeMX                     | Joystic SELECT (with define VIO_BUTTON_REMAP)
 | PH4     | vioLED0        | not configured via CubeMX                     | LD2 GREEN
 | MFX_IO0 | vioLED1        | not configured via CubeMX                     | LD1 ORANGE
+| MFX_IO1 | vioSignalIn.4  | not configured via CubeMX                     | Joystic UP
+| MFX_IO2 | vioSignalIn.5  | not configured via CubeMX                     | Joystic DOWN
+| MFX_IO4 | vioSignalIn.6  | not configured via CubeMX                     | Joystic LEFT
+| MFX_IO3 | vioSignalIn.7  | not configured via CubeMX                     | Joystic RIGHT
+| PC13    | vioSignalIn.8  | not configured via CubeMX                     | Joystic SELECT
 
 ### NVIC Configuration
 
@@ -124,6 +129,11 @@ The example project can be re-configured to work on custom hardware. Refer to ["
 
 | CMSIS-Driver VIO  | Physical board hardware
 |:------------------|:-----------------------
-| vioBUTTON0        | B2 Joystick SELECT, with define VIO_BUTTON_FROM_JOYSTICK (PC13)
+| vioBUTTON0        | B2 Joystick (with define VIO_BUTTON_REMAP)
 | vioLED0           | LD2 GREEN (PH4)
-| vioLED1           | LD1 ORANGE (MFX_GPIO0 ; PB0)
+| vioLED1           | LD1 ORANGE (MFX_IO0)
+| vioJOYup          | B2 Joystic UP (MFX_IO1)
+| vioJOYdown        | B2 Joystic DOWN (MFX_IO2)
+| vioJOYleft        | B2 Joystic LEFT (MFX_IO4)
+| vioJOYright       | B2 Joystic RIGHT (MFX_IO3)
+| vioJOYselect      | B2 Joystic SELECT (PC13)

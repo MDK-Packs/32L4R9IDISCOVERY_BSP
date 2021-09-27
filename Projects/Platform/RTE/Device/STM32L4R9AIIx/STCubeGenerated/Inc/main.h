@@ -31,7 +31,7 @@ extern "C" {
 #include "stm32l4xx_hal.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "stm32l4r9i_discovery_io.h"
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

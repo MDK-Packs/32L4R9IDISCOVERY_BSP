@@ -1,5 +1,5 @@
 /*---------------------------------------------------------------------------
- * Copyright (c) 2020 Arm Limited (or its affiliates). All rights reserved.
+ * Copyright (c) 2021 Arm Limited (or its affiliates). All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -14,10 +14,6 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- *      Name:    Blinky.c
- *      Purpose: RTX example program
- *
  *---------------------------------------------------------------------------*/
 
 #include "main.h"
@@ -84,6 +80,8 @@ __NO_RETURN static void thrButton (void *arg) {
  *---------------------------------------------------------------------------*/
 static void app_main (void *argument) {
   (void)argument;
+
+  vioPrint(vioLevelHeading, "Blinky");
 
   tid_thrLED = osThreadNew(thrLED, NULL, NULL);         // Create LED thread
   if (tid_thrLED == NULL) { /* add error handling */ }

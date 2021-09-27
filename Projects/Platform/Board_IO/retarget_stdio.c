@@ -14,10 +14,6 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- *      Name:    retarget_stdio.c
- *      Purpose: Retarget stdio to Debug Console
- *
  *---------------------------------------------------------------------------*/
 
 #include "stm32l4xx_hal.h"

@@ -116,31 +116,6 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority) {
 
   return HAL_OK;
 }
-
-#if defined MemoryCard_CD0_Pin_Extern
-/**
-  Function used to read Card Detect (CD) pin state when
-  Memory Card is used in MCI mode.
-  \param[in]  instance  MCI driver instance number (0:SDMMC1, 1:SDMMC2)
-  \return     1:card detected, 0:card not detected, or error
-*/
-int32_t MCI_ReadCD (uint32_t instance) {
-  (void)instance;
-  int32_t tmp = 0;
-
-  if (BSP_IO_ReadPin(SD_DETECT_PIN) == IO_PIN_RESET) {
-    /* Card present */
-    tmp = 1;
-  }
-  else {
-    /* Card not present */
-    tmp = 0;
-  }
-
-  return (tmp);
-}
-#endif
-
 /* USER CODE END 0 */
 
 /**

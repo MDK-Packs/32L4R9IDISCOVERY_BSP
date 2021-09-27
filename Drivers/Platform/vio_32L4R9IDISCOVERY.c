@@ -26,16 +26,16 @@
 
 The table below lists the physical I/O mapping of this CMSIS-Driver VIO implementation.
 
-Virtual Resource  | Variable       | Physical Resource on 32L4R9IDISCOVERY                        |
-:-----------------|:---------------|:-------------------------------------------------------------|
-vioBUTTON0        | vioSignalIn.0  | PC13: Joystic SELECT  (with define VIO_BUTTON_FROM_JOYSTICK) |
-vioJOYup          | vioSignalIn.4  | MFX_GPIO1(PB1): Joystic UP                                   |
-vioJOYdown        | vioSignalIn.5  | MFX_GPIO2(PB2): Joystic DOWN                                 |
-vioJOYleft        | vioSignalIn.6  | MFX_GPIO4(PB4): Joystic LEFT                                 |
-vioJOYright       | vioSignalIn.7  | MFX_GPIO3(PB3): Joystic RIGHT                                |
-vioJOYselect      | vioSignalIn.8  | PC13: Joystic SELECT                                         |
-vioLED0           | vioSignalOut.0 | PH4: LD2 GREEN                                               |
-vioLED1           | vioSignalOut.1 | MFX_GPIO0(PB0): LD1 ORANGE                                   |
+Virtual Resource  | Variable       | Physical Resource on 32L4R9IDISCOVERY |
+:-----------------|:---------------|:--------------------------------------|
+vioBUTTON0        | vioSignalIn.0  | Joystic (with define VIO_BUTTON_REMAP)|
+vioJOYup          | vioSignalIn.4  | MFX_IO1:   Joystic UP                 |
+vioJOYdown        | vioSignalIn.5  | MFX_IO2:   Joystic DOWN               |
+vioJOYleft        | vioSignalIn.6  | MFX_IO4:   Joystic LEFT               |
+vioJOYright       | vioSignalIn.7  | MFX_IO3:   Joystic RIGHT              |
+vioJOYselect      | vioSignalIn.8  | GPIO C.13: Joystic SELECT             |
+vioLED0           | vioSignalOut.0 | GPIO H.4:  LD2 GREEN                  |
+vioLED1           | vioSignalOut.1 | MFX_IO0:   LD1 ORANGE                 |
 */
 
 #include <stdio.h>
@@ -414,10 +414,9 @@ uint32_t vioGetSignal (uint32_t mask) {
 
 #if !defined CMSIS_VIN
   // Get input signals from joystick
-
-#if defined VIO_BUTTON_FROM_JOYSTICK
+#if defined VIO_BUTTON_REMAP
   if ((mask & vioBUTTON0) != 0U) {
-    if (BSP_JOY_GetState() == JOY_SEL) {
+    if (BSP_JOY_GetState() != JOY_NONE ) {
       vioSignalIn |=  vioBUTTON0;
     } else {
       vioSignalIn &= ~vioBUTTON0;

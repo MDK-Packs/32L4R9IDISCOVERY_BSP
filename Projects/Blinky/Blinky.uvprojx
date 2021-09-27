@@ -305,8 +305,8 @@
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
-                <StartAddress>0x0</StartAddress>
-                <Size>0x0</Size>
+                <StartAddress>0x10000000</StartAddress>
+                <Size>0x10000</Size>
               </OCR_RVCT10>
             </OnChipMemories>
             <RvctStartVector></RvctStartVector>
@@ -463,7 +463,7 @@
         <targetInfos>
           <targetInfo name="32L4R9IDISCOVERY">
             <c>
-              <Define>VIO_BUTTON_FROM_JOYSTICK, VIO_LCD_DISABLE</Define>
+              <Define>VIO_BUTTON_REMAP, VIO_LCD_DISABLE</Define>
             </c>
           </targetInfo>
         </targetInfos>
@@ -533,7 +533,7 @@
         <targetInfos>
           <targetInfo name="32L4R9IDISCOVERY">
             <c>
-              <Define>VIO_BUTTON_FROM_JOYSTICK, VIO_LCD_DISABLE</Define>
+              <Define>VIO_BUTTON_REMAP, VIO_LCD_DISABLE</Define>
             </c>
           </targetInfo>
         </targetInfos>
