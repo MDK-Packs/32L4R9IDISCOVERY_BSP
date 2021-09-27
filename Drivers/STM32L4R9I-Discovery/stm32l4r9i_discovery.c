@@ -348,7 +348,7 @@ uint8_t BSP_JOY_Init(JOYMode_TypeDef Joy_Mode)
     HAL_GPIO_Init(SEL_JOY_GPIO_PORT, &GPIO_InitStruct);
 
     /* Configure other joystick pins */
-    BSP_IO_ConfigPin((RIGHT_JOY_PIN | LEFT_JOY_PIN | UP_JOY_PIN | DOWN_JOY_PIN), IO_MODE_INPUT_PU);
+    BSP_IO_ConfigPin((RIGHT_JOY_PIN | LEFT_JOY_PIN | UP_JOY_PIN | DOWN_JOY_PIN), IO_MODE_INPUT_PD);
   }
   else if(Joy_Mode == JOY_MODE_EXTI)
   {
