@@ -1,0 +1,16 @@
+ Drivers/STM32L4R9I-Discovery/stm32l4r9i_discovery.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Drivers/STM32L4R9I-Discovery/stm32l4r9i_discovery.c b/Drivers/STM32L4R9I-Discovery/stm32l4r9i_discovery.c
+index a7a6313..c7bfad8 100644
+--- a/Drivers/STM32L4R9I-Discovery/stm32l4r9i_discovery.c
++++ b/Drivers/STM32L4R9I-Discovery/stm32l4r9i_discovery.c
+@@ -348,7 +348,7 @@ uint8_t BSP_JOY_Init(JOYMode_TypeDef Joy_Mode)
+     HAL_GPIO_Init(SEL_JOY_GPIO_PORT, &GPIO_InitStruct);
+ 
+     /* Configure other joystick pins */
+-    BSP_IO_ConfigPin((RIGHT_JOY_PIN | LEFT_JOY_PIN | UP_JOY_PIN | DOWN_JOY_PIN), IO_MODE_INPUT_PU);
++    BSP_IO_ConfigPin((RIGHT_JOY_PIN | LEFT_JOY_PIN | UP_JOY_PIN | DOWN_JOY_PIN), IO_MODE_INPUT_PD);
+   }
+   else if(Joy_Mode == JOY_MODE_EXTI)
+   {
