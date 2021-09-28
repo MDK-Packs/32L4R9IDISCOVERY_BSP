@@ -7,7 +7,7 @@
   <repository type="git">https://github.com/MDK-Packs/32L4R9IDISCOVERY_BSP.git</repository>
 
   <releases>
-    <release version="1.0.0-rc1">
+    <release version="1.0.0" date="2021-09-28">
       Board description and documentation for 32L4R9IDISCOVERY
       Synchronized with STM32CubeL4 Firmware Package version V1.17.0
       Drivers:
