@@ -11,6 +11,7 @@
       Drivers:
       - CMSIS-Driver VIO:
       -- Correct variables initialization to avoid compiler warnings
+      -- Remove LCD support
     </release>
     <release version="1.0.1-dev0">
       Update Platform example (blocking stdin_getchar in stdio retarget)

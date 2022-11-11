@@ -50,11 +50,6 @@ vioLED1           | vioSignalOut.1 | MFX_IO0:   LD1 ORANGE                 |
 #if !defined CMSIS_VOUT || !defined CMSIS_VIN
 #include "stm32l4r9i_discovery.h"
 #include "stm32l4r9i_discovery_io.h"
-#if !defined VIO_LCD_DISABLE
-#include "stm32l4r9i_discovery_lcd.h"
-
-#include "cmsis_os2.h"
-#endif
 #endif
 
 // VIO input, output definitions
@@ -76,88 +71,7 @@ __USED vioAddrIPv6_t vioAddrIPv6[VIO_IPV6_ADDRESS_NUM];                 // Memor
 
 #if !defined CMSIS_VOUT
 // Global types, variables, functions
-#if !defined VIO_LCD_DISABLE
-static osMutexId_t  mid_mutLCD;         // Mutex ID of mutex:  LCD
-#endif
 
-#if !defined VIO_LCD_DISABLE
-typedef struct displayArea {
-  uint16_t   xOrigin;          // x Origin
-  uint16_t   xWidth;           // x width
-  uint16_t   xPos;             // current x position
-  uint16_t   yOrigin;          // y Origin
-  uint16_t   yHeight;          // y height
-  uint16_t   yPos;             // current y position
-  uint16_t   fontWidth;        // font width
-  uint16_t   fontHeight;       // font height
-} displayArea_t;
-
-static displayArea_t display[4];
-
-/**
-  Scroll content of the selected display for dy pixels vertically
-
-  \param[in]   idx   Display index.
-*/
-static void displayScrollVertical (uint32_t idx) {
-  uint32_t x, y, color;
-
-  for (y = display[idx].yOrigin; y < (display[idx].yHeight - display[idx].fontHeight); y++) {
-    for (x = display[idx].xOrigin; x < display[idx].xWidth; x++) {
-      color = BSP_LCD_ReadPixel(x, y + display[idx].fontHeight);
-      BSP_LCD_DrawPixel(x, y, color);
-    }
-  }
-
-  for (; y < display[idx].yHeight; y++) {
-    for (x = display[idx].xOrigin; x < display[idx].xWidth; x++) {
-      BSP_LCD_DrawPixel(x, y, LCD_COLOR_BLACK);
-    }
-  }
-}
-
-/**
-  write a string to the selected display
-
-  \param[in]   idx   Display index.
-  \param[in]   str   String
-*/
-static void displayString (uint32_t idx, char *str) {
-  char ch;
-  uint8_t i = 0;
-
-  while (str[i] != '\0') {
-    ch = str[i++];                                                   /* Get character and increase index */
-
-    switch (ch) {
-      case 0x0A:                          // Line Feed
-        display[idx].yPos += display[idx].fontHeight;                /* Move cursor one row down */
-        if (display[idx].yPos >= display[idx].yHeight) {             /* If bottom of display was overstepped */
-          displayScrollVertical(idx);
-          display[idx].yPos -= display[idx].fontHeight;              /* Stay in last row */
-        }
-        break;
-      case 0x0D:                                                     /* Carriage Return */
-        display[idx].xPos = display[idx].xOrigin;                    /* Move cursor to first column */
-        break;
-      default:
-        // Display character at current cursor position
-        BSP_LCD_DisplayChar(display[idx].xPos, display[idx].yPos, ch);
-        display[idx].xPos += display[idx].fontWidth;                 /* Move cursor one column to right */
-        if (display[idx].xPos >= display[idx].xWidth) {              /* If last column was overstepped */
-          display[idx].xPos = display[idx].xOrigin;                  /* First column */
-          display[idx].yPos += display[idx].fontHeight;              /* Move cursor one row down and to */
-        }
-        if (display[idx].yPos >= display[idx].yHeight) {             /* If bottom of display was overstepped */
-          displayScrollVertical(idx);
-          display[idx].yPos -= display[idx].fontHeight;              /* Stay in last row */
-        }
-        break;
-    }
-
-  }
-}
-#endif
 #endif
 
 #if !defined CMSIS_VIN
@@ -167,14 +81,10 @@ static void displayString (uint32_t idx, char *str) {
 
 // Initialize test input, output.
 void vioInit (void) {
-uint32_t x_size, y_size;
 #if !defined CMSIS_VOUT
-#if !defined VIO_LCD_DISABLE
 // Add user variables here:
 
 #endif
-#endif
-
 #if !defined CMSIS_VIN
 // Add user variables here:
 
@@ -208,102 +118,6 @@ uint32_t x_size, y_size;
   // Initialize LEDs pins
   BSP_LED_Init(LED_GREEN);
   BSP_LED_Init(LED_ORANGE);
-
-#if !defined VIO_LCD_DISABLE
-  // Create LCD mutex
-  mid_mutLCD = osMutexNew(NULL);
-  if (mid_mutLCD == NULL) { /* add error handling */ }
-
-  // Initialize the LCD
-  BSP_LCD_Init();
-
-  // Check that frame buffer is available
-  while(BSP_LCD_IsFrameBufferAvailable() != LCD_OK);
-
-  // Set LCD Foreground Layer
-  BSP_LCD_SelectLayer(LTDC_ACTIVE_LAYER_BACKGROUND);
-
-  // Set Font
-  BSP_LCD_SetFont(&LCD_DEFAULT_FONT);
-
-  // Clear the LCD
-  BSP_LCD_SetBackColor(LCD_COLOR_BLACK);
-  BSP_LCD_Clear(LCD_COLOR_BLACK);
-
-  // Set the display on
-  BSP_LCD_DisplayOn();
-
-  x_size = BSP_LCD_GetXSize() - 120U;
-  y_size = BSP_LCD_GetYSize() - 120U;
-
-  // Initialize display areas
-  display[vioLevelHeading].fontWidth  = 11;
-  display[vioLevelHeading].fontHeight = 16;
-  display[vioLevelHeading].xOrigin    =  3 + 60;
-  display[vioLevelHeading].xWidth     = x_size - 4;
-  display[vioLevelHeading].xPos       = display[vioLevelHeading].xOrigin;
-  display[vioLevelHeading].yOrigin    = 64;
-  display[vioLevelHeading].yHeight    = 2 * display[vioLevelHeading].fontHeight + display[vioLevelHeading].yOrigin;
-  display[vioLevelHeading].yPos       = display[vioLevelHeading].yOrigin;
-
-  display[vioLevelNone].fontWidth     = 7;
-  display[vioLevelNone].fontHeight    = 12;
-  display[vioLevelNone].xOrigin       =  3 + 60;
-  display[vioLevelNone].xWidth        = x_size - 4;
-  display[vioLevelNone].xPos          = display[vioLevelNone].xOrigin;
-  display[vioLevelNone].yOrigin       = 140;
-  display[vioLevelNone].yHeight       = 2 * display[vioLevelNone].fontHeight + display[vioLevelNone].yOrigin;
-  display[vioLevelNone].yPos          = display[vioLevelNone].yOrigin;
-
-  display[vioLevelError].fontWidth    = 7;
-  display[vioLevelError].fontHeight   = 12;
-  display[vioLevelError].xOrigin      = 3 + 60;
-  display[vioLevelError].xWidth       = x_size - 4;
-  display[vioLevelError].xPos         = display[vioLevelError].xOrigin;
-  display[vioLevelError].yOrigin      = 155;
-  display[vioLevelError].yHeight      = 4 * display[vioLevelError].fontHeight + display[vioLevelError].yOrigin;
-  display[vioLevelError].yPos         = display[vioLevelError].yOrigin;
-
-  display[vioLevelMessage].fontWidth  = 7;
-  display[vioLevelMessage].fontHeight = 12;
-  display[vioLevelMessage].xOrigin    = 3 + 60;
-  display[vioLevelMessage].xWidth     = x_size - 4;
-  display[vioLevelMessage].xPos       = display[vioLevelMessage].xOrigin;
-  display[vioLevelMessage].yOrigin    = 230;
-  display[vioLevelMessage].yHeight    = 8 * display[vioLevelMessage].fontHeight + display[vioLevelMessage].yOrigin;
-  display[vioLevelMessage].yPos       = display[vioLevelMessage].yOrigin;
-
-  // Set the LCD Text Color
-  BSP_LCD_SetTextColor(LCD_COLOR_ORANGE);
-
-  // Draw LCD layout
-  BSP_LCD_DrawRect(60U, 60U, x_size,    y_size   );
-  BSP_LCD_DrawRect(61U, 61U, x_size-2U, y_size-2U);
-  /*   3        pixel row empty */
-  /*   4.. 35   2 lines font16 =  2*16 vioLevelHeading */
-  /*  36        pixel row empty  */
-
-  BSP_LCD_DrawHLine(62U, 100U, x_size-4U);
-  BSP_LCD_DrawHLine(62U, 101U, x_size-4U);
-  /*  39        pixel row empty */
-  /*  40.. 63   2 lines font12 =  2*12 vioLevelNone */
-  /*  64        pixel row empty */
-
-  BSP_LCD_DrawHLine(62U, 150U, x_size-4U);
-  BSP_LCD_DrawHLine(62U, 151U, x_size-4U);
-  /*  67        pixel row empty */
-  /*  68..115   4 lines font12 =  4*12 vioLevelError */
-  /* 116        pixel row empty */
-
-  BSP_LCD_DrawHLine(62U, 220U, x_size-4U);
-  BSP_LCD_DrawHLine(62U, 221U, x_size-4U);
-  /* 119        pixel row empty */
-  /* 120..227   9 lines font12 = 9*12 vioLevelMessage */
-  /* 228        pixel row empty */
-
-  // Refresh the display
-  BSP_LCD_Refresh();
-#endif
 #endif
 
 #if !defined CMSIS_VIN
@@ -337,39 +151,8 @@ int32_t vioPrint (uint32_t level, const char *format, ...) {
   va_end(args);
 
 #if !defined CMSIS_VOUT
-#if !defined VIO_LCD_DISABLE
-// Draw LCD level
-  osMutexAcquire(mid_mutLCD, osWaitForever);
-  switch (level) {
-    case vioLevelNone:
-      BSP_LCD_SetFont(&Font12);
-      BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
-      displayString(level, (char *)vioPrintMem[level]);
-      break;
-    case vioLevelHeading:
-      BSP_LCD_SetFont(&Font16);
-      BSP_LCD_SetTextColor(LCD_COLOR_GREEN);
-      displayString(level, (char *)vioPrintMem[level]);
-      break;
-    case vioLevelMessage:
-      BSP_LCD_SetFont(&Font12);
-      BSP_LCD_SetTextColor(LCD_COLOR_BLUE);
-      displayString(level, (char *)vioPrintMem[level]);
-      break;
-    case vioLevelError:
-      BSP_LCD_SetFont(&Font12);
-      BSP_LCD_SetTextColor(LCD_COLOR_RED);
-      displayString(level, (char *)vioPrintMem[level]);
-      break;
-  }
-      BSP_LCD_SetFont(&Font12);
-      BSP_LCD_SetTextColor(LCD_COLOR_DARKBLUE);
-  osMutexRelease(mid_mutLCD);
+// Add user code here:
 
-  // Refresh the display
-  BSP_LCD_Refresh();
-
-#endif
 #endif
 
   return (ret);
