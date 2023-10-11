@@ -81,8 +81,6 @@ __NO_RETURN static void thrButton (void *arg) {
 static void app_main (void *argument) {
   (void)argument;
 
-  vioPrint(vioLevelHeading, "Blinky");
-
   tid_thrLED = osThreadNew(thrLED, NULL, NULL);         // Create LED thread
   if (tid_thrLED == NULL) { /* add error handling */ }
 
